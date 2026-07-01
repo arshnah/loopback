@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
-  <defs>
-    <linearGradient id="vg" x1="0" y1="0" x2="88" y2="31" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7c5cff"/>
-      <stop offset="0.5" stop-color="#ff5db1"/>
-      <stop offset="1" stop-color="#ff7a5c"/>
-    </linearGradient>
-  </defs>
-  <rect width="88" height="31" fill="#0c0812"/>
-  <rect x="1" y="1" width="86" height="29" fill="#181026"/>
-  <rect x="1" y="1" width="86" height="1" fill="#3a2c52"/>
-  <rect x="1" y="1" width="27" height="29" fill="#0f0a18"/>
-  <g transform="translate(14.5,15.5)">
-    <circle r="8" fill="none" stroke="url(#vg)" stroke-width="2.5"/>
-    <circle cx="0" cy="-8" r="2.4" fill="#ff5db1"/>
-  </g>
-  <text x="31" y="14" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="9" font-weight="bold" fill="#ffe0ef">VIBERING</text>
-  <text x="31" y="24" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="7" fill="#b98ff0">web ring</text>
+  <!-- Outer border -->
+  <rect width="88" height="31" fill="#242430"/>
+  <!-- Main inner background -->
+  <rect x="1" y="1" width="86" height="29" fill="#141419"/>
+  <!-- Left logo panel background -->
+  <rect x="1" y="1" width="26" height="29" fill="#0c0c0f"/>
+  <!-- Left/Right panel separator border -->
+  <rect x="27" y="1" width="1" height="29" fill="#242430"/>
+  
+  <!-- Flat Logo (matches new website header logo) -->
+  <rect x="5" y="6.5" width="18" height="18" fill="none" stroke="#9FA1FF" stroke-width="2"/>
+  <rect x="10" y="11.5" width="8" height="8" fill="#AEE2FF"/>
+  <rect x="16" y="6.5" width="4" height="4" fill="#D9F9DF"/>
+  
+  <!-- Text Content -->
+  <text x="33" y="13.5" font-family="system-ui, -apple-system, sans-serif" font-size="8.5" font-weight="800" letter-spacing="0.5" fill="#f0f0f5">VIBERING</text>
+  <text x="33" y="23" font-family="system-ui, -apple-system, sans-serif" font-size="7" font-weight="500" letter-spacing="0.2" fill="#9fa0b2">web ring</text>
 </svg>
