@@ -383,6 +383,17 @@
       color: var(--palette-1);
     }
 
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex: none;
+      background: var(--faint);
+    }
+
+    .dot-up { background: #35c46a; }
+    .dot-down { background: #ff5a5a; }
+
     .host {
       color: var(--muted);
       font-size: 13px;
@@ -570,6 +581,14 @@
     var host = function (u) { try { return new URL(u).host.replace(/^www\./, ""); } catch (e) { return u; } };
     var EXT = '<svg class="ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"><path d="M7 17L17 7M7 7h10v10"/></svg>';
 
+    var STATUS = {};
+    function statusDot(m) {
+      var s = STATUS[(m.name || "").toLowerCase()];
+      var cls = s === "up" ? "dot-up" : s === "down" ? "dot-down" : "";
+      var label = s === "up" ? "site is up" : s === "down" ? "site looks down" : "status unknown";
+      return '<span class="dot ' + cls + '" title="' + label + '" aria-label="' + label + '"></span>';
+    }
+
     function card(m) {
       var av = m.gh
         ? '<img src="https://avatars.githubusercontent.com/' + esc(m.gh) + '?size=76" alt="" loading="lazy" onerror="this.remove()">'
@@ -583,7 +602,7 @@
       return '<div class="m" data-q="' + q + '">' +
         '<span class="ring"><span class="ava">' + av + initial + '</span></span>' +
         '<span class="info">' +
-        '<a class="name" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + esc(m.name) + EXT + '</a>' +
+        '<a class="name" href="' + esc(m.url) + '" target="_blank" rel="noopener">' + statusDot(m) + esc(m.name) + EXT + '</a>' +
         '<div class="host">' + esc(host(m.url)) + '</div>' + note + gh +
         '</span>' +
         '</div>';
@@ -592,7 +611,14 @@
     (function () {
       var grid = document.getElementById("members");
       var search = document.getElementById("search");
-      loadMembers().then(function (members) {
+      var STATUS_URL = "https://raw.githubusercontent.com/arshnah/vibering/status/status.json";
+      fetch(STATUS_URL, { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .catch(function () { return null; })
+        .then(function (st) {
+          if (st && st.sites) Object.keys(st.sites).forEach(function (k) { STATUS[k.toLowerCase()] = st.sites[k]; });
+          return loadMembers();
+        }).then(function (members) {
         document.getElementById("count").textContent = members.length + (members.length === 1 ? " site" : " sites");
         if (members[0]) {
           document.getElementById("t-prev").href = "go.html?from=" + encodeURIComponent(members[0].name) + "&dir=prev";

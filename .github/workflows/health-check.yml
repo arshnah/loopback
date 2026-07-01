@@ -1,7 +1,8 @@
 name: ring health check
 
-# Pings every member site on a schedule. If any are down, it opens (or updates)
-# an issue listing them. When everything is back up, it closes that issue.
+# Pings every member site on a schedule. Writes status.json (published to the
+# `status` branch so the homepage can show live up/down dots), and opens/updates
+# an issue when any site is down — closing it when everything is back up.
 
 on:
   schedule:
@@ -9,7 +10,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
-  contents: read
+  contents: write
   issues: write
 
 jobs:
@@ -24,6 +25,7 @@ jobs:
             const members = JSON.parse(fs.readFileSync("webring.json", "utf8"));
             const marker = "<!-- ring-health -->";
             const down = [];
+            const sites = {};
 
             for (const m of members) {
               const ctrl = new AbortController();
@@ -33,13 +35,19 @@ jobs:
                   method: "GET", redirect: "follow", signal: ctrl.signal,
                   headers: { "user-agent": "vibering-health-check" },
                 });
+                sites[m.name] = res.ok ? "up" : "down";
                 if (!res.ok) down.push(`**${m.name}** — ${m.url} (HTTP ${res.status})`);
               } catch (e) {
+                sites[m.name] = "down";
                 down.push(`**${m.name}** — ${m.url} (${e.name || "unreachable"})`);
               } finally {
                 clearTimeout(timer);
               }
             }
+
+            // status.json — consumed by the homepage for live dots
+            const status = { checked: new Date().toISOString(), sites };
+            fs.writeFileSync("status.json", JSON.stringify(status, null, 2) + "\n");
 
             const owner = context.repo.owner, repo = context.repo.repo;
             const issues = await github.paginate(github.rest.issues.listForRepo, { owner, repo, state: "open", per_page: 100 });
@@ -55,3 +63,20 @@ jobs:
               await github.rest.issues.createComment({ owner, repo, issue_number: existing.number, body: "All member sites are back up. Closing." });
               await github.rest.issues.update({ owner, repo, issue_number: existing.number, state: "closed" });
             }
+
+      # Publish status.json to the `status` branch (main is protected, the bot
+      # can't push there — but the homepage reads it via raw.githubusercontent).
+      - name: publish status.json
+        if: always()
+        run: |
+          test -f status.json || exit 0
+          cp status.json /tmp/status.json
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin status 2>/dev/null && git checkout status || git checkout --orphan status
+          git rm -rf --cached . >/dev/null 2>&1 || true
+          find . -maxdepth 1 ! -name . ! -name .git ! -name status.json -exec rm -rf {} + 2>/dev/null || true
+          cp /tmp/status.json status.json
+          git add status.json
+          git commit -m "health: update status.json" || { echo "no change"; exit 0; }
+          git push origin status
