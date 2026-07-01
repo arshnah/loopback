@@ -4,101 +4,167 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Loopback Webring</title>
+<style>
+  body { margin:0; background:#efe7d0; color:#2b2a26;
+    font-family:ui-monospace,"Cascadia Mono","Courier New",monospace; font-size:15px; line-height:1.5; }
+  a { color:#1b2a5b; }
+  .wrap { max-width:900px; margin:0 auto; padding:22px 14px 60px; }
+
+  .head { text-align:center; margin-bottom:20px; }
+  .head h1 { margin:.15em 0; letter-spacing:1px; }
+  .head p { margin:.2em 0; }
+
+  .panel { background:#f7f1df; border:2px solid #2b2a26; box-shadow:5px 5px 0 rgba(43,42,38,.3); margin:0 0 20px; }
+  .bar { background:#1b2a5b; color:#efe7d0; padding:7px 12px; display:flex; justify-content:space-between;
+    gap:10px; font-weight:bold; letter-spacing:1.5px; text-transform:uppercase; font-size:12px; }
+  .body { padding:15px 16px; }
+
+  .toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  #search { flex:1 1 220px; padding:8px 10px; border:2px solid #b6ac8f; background:#efe7d0;
+    color:#2b2a26; font-family:inherit; font-size:15px; outline:none; }
+  #search:focus { border-color:#1b2a5b; }
+  .counter { background:#111; color:#33ff5a; padding:6px 9px; border:2px solid #2b2a26;
+    letter-spacing:2px; font-size:12px; white-space:nowrap; }
+
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px; margin-top:14px; }
+  .card { display:flex; align-items:center; gap:10px; background:#efe7d0; border:2px solid #2b2a26;
+    box-shadow:3px 3px 0 rgba(43,42,38,.28); padding:8px 10px; }
+  .ava { flex:none; width:42px; height:42px; background:#1b2a5b; border:2px solid #2b2a26; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; color:#efe7d0; font-weight:bold; font-size:18px; }
+  .ava img { width:100%; height:100%; object-fit:cover; display:block; }
+  .meta { min-width:0; }
+  .nm { color:#1b2a5b; font-weight:bold; text-decoration:none; font-size:16px; }
+  .nm:hover { text-decoration:underline; }
+  .hs { color:#6b6552; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .via { font-size:12px; color:#6b6552; margin-top:1px; }
+  .via.star { color:#c98a1e; }
+  .gh { align-self:flex-start; margin-left:auto; font-size:12px; color:#6b6552; text-decoration:none; }
+  .gh:hover { color:#1b2a5b; }
+  .note { color:#6b6552; margin-top:12px; font-size:14px; }
+
+  pre { background:#111; color:#d7d7c0; border:2px solid #2b2a26; padding:11px 13px; overflow:auto; font-size:13px; }
+  .foot { text-align:center; color:#6b6552; font-size:13px; margin-top:24px; }
+</style>
 </head>
 <body>
+<div class="wrap">
 
-<center>
-<h1>The Loopback Webring</h1>
-<p>A ring of personal websites, linked together in a loop.<br>
-Invite only.</p>
-<p>[ <a href="random/">Random site</a> ]</p>
-</center>
+  <div class="head">
+    <h1>The Loopback Webring</h1>
+    <p>A ring of personal websites, linked together in a loop. Invite only.</p>
+    <p>[ <a href="random/">Random site</a> ]</p>
+  </div>
 
-<hr>
+  <div class="panel">
+    <div class="bar"><span>&#9673; Members of the ring</span><span>loopback</span></div>
+    <div class="body">
+      <div class="toolbar">
+        <input id="search" type="search" placeholder="search the directory..." autocomplete="off" spellcheck="false">
+        <span class="counter" id="counter">VISITORS: 000000</span>
+      </div>
+      <div class="grid" id="members"><p>Loading member list...</p></div>
+      <p class="note" id="empty"></p>
+    </div>
+  </div>
 
-<h2>Members</h2>
-<ol id="members">
-  <li>Loading member list...</li>
-</ol>
-<p id="count"></p>
+  <div class="panel">
+    <div class="bar"><span>&#9632; What is this</span></div>
+    <div class="body">
+      <p>A webring is a collection of independent websites linked together in a loop. You start
+      at one site, click "next", and you are taken to the next member's site, then the next, and
+      so on, until you come back around to where you started. No ranking, no tracking, no algorithm.
+      Just a list of people's own websites, connected by hand.</p>
+    </div>
+  </div>
 
-<hr>
+  <div class="panel">
+    <div class="bar"><span>&#9998; How to join</span></div>
+    <div class="body">
+      <p>This ring is invite-only. You cannot add yourself. A current member has to vouch for you,
+      and an admin has to merge you in.</p>
 
-<h2>What is a webring?</h2>
-<p>
-A webring is a collection of independent websites linked together in a loop.
-You start at one site, click "next", and you are taken to the next member's
-site, then the next, and so on, until you come back around to where you started.
-There is no ranking, no tracking, and no algorithm. Just a list of people's own
-websites, connected by hand.
-</p>
-
-<hr>
-
-<h2>How to join</h2>
-<p>
-This ring is invite-only. You cannot add yourself. A current member has to vouch
-for you, and an admin has to merge you in.
-</p>
-
-<p><b>Step 1.</b> Add your entry to the end of <tt>webring.json</tt>:</p>
-<pre>
-{
+      <p><b>Step 1.</b> Add your entry to the end of <code>webring.json</code>:</p>
+      <pre>{
   "name": "your-handle",
   "gh": "your-github-username",
   "url": "https://your-site.com",
   "invitedBy": "member-who-invited-you"
-}
-</pre>
+}</pre>
 
-<p><b>Step 2.</b> Put the ring navigation on your own site
-(replace <tt>your-handle</tt> with the name you used above):</p>
-<pre>
-&lt;!-- loopback webring --&gt;
-&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=prev"&gt;prev&lt;/a&gt; |
+      <p><b>Step 2.</b> Put the ring navigation on your own site
+      (replace <code>your-handle</code> with the name you used):</p>
+      <pre>&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=prev"&gt;prev&lt;/a&gt; |
 &lt;a href="https://arshnah.github.io/loopback/random/"&gt;random&lt;/a&gt; |
-&lt;a href="https://arshnah.github.io/loopback/"&gt;loopback&lt;/a&gt; |
-&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=next"&gt;next&lt;/a&gt;
-</pre>
+&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=next"&gt;next&lt;/a&gt;</pre>
 
-<p><b>Step 3.</b> Open a pull request and ping the member who invited you. They
-approve it with their own GitHub account, then an admin merges it in.
-Full instructions are in <a href="JOIN.md">JOIN.md</a>.</p>
+      <p><b>Step 3.</b> Open a pull request and ping the member who invited you. They approve it
+      with their own GitHub account, then an admin merges it. Full details in
+      <a href="JOIN.md">JOIN.md</a>.</p>
+    </div>
+  </div>
 
-<hr>
+  <div class="panel">
+    <div class="bar"><span>&#9670; Badge</span></div>
+    <div class="body">
+      <p>Link this 88x31 badge back to the ring:</p>
+      <p><img src="badge.svg" width="88" height="31" alt="loopback webring"></p>
+    </div>
+  </div>
 
-<h2>Badge</h2>
-<p>Link this 88x31 badge back to the ring:</p>
-<p><img src="badge.svg" width="88" height="31" alt="loopback webring"></p>
+  <p class="foot">&copy; 2026 &middot; <a href="https://github.com/arshnah/loopback">source on github</a></p>
 
-<hr>
-
-<p><small>
-&copy; 2026 &middot;
-<a href="https://github.com/arshnah/loopback">source on github</a>
-</small></p>
+</div>
 
 <script src="webring.js"></script>
 <script>
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
     return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
+  function host(u){ try { return new URL(u).host.replace(/^www\./, ""); } catch (e) { return u; } }
 
   (async function(){
-    var list = document.getElementById("members");
+    var grid = document.getElementById("members");
+    var empty = document.getElementById("empty");
     try {
       var members = await loadMembers();
-      if (!members.length) { list.innerHTML = "<li>No members yet.</li>"; return; }
-      list.innerHTML = members.map(function(m){
-        var gh = m.gh ? ' (<a href="https://github.com/' + esc(m.gh) + '">github</a>)' : "";
+      document.getElementById("counter").textContent =
+        "VISITORS: " + String(13370 + members.length).slice(-6).padStart(6, "0");
+
+      if (!members.length) { grid.innerHTML = "<p>No members yet.</p>"; return; }
+
+      grid.innerHTML = members.map(function(m){
+        var initial = esc((m.name || "?").charAt(0).toUpperCase());
+        var av = m.gh
+          ? '<img src="https://avatars.githubusercontent.com/' + esc(m.gh) +
+            '?size=80" alt="" loading="lazy" onerror="this.remove()">'
+          : "";
+        var gh = m.gh ? '<a class="gh" href="https://github.com/' + esc(m.gh) + '">[gh]</a>' : "";
         var via = "";
         if (m.invitedBy) via = (String(m.invitedBy).toLowerCase() === "founder")
-          ? " &mdash; founder" : " &mdash; invited by " + esc(m.invitedBy);
-        return '<li><a href="' + esc(m.url) + '">' + esc(m.name) + "</a>" + gh + via + "</li>";
+          ? '<div class="via star">&#9733; founder</div>'
+          : '<div class="via">&#8627; invited by ' + esc(m.invitedBy) + '</div>';
+        var q = esc((m.name + " " + host(m.url) + " " + (m.invitedBy || "")).toLowerCase());
+        return '<div class="card" data-q="' + q + '">' +
+          '<div class="ava">' + av + initial + '</div>' +
+          '<div class="meta">' +
+            '<a class="nm" href="' + esc(m.url) + '">' + esc(m.name) + '</a>' +
+            '<div class="hs">' + esc(host(m.url)) + '</div>' + via +
+          '</div>' + gh +
+        '</div>';
       }).join("");
-      document.getElementById("count").textContent =
-        members.length + (members.length === 1 ? " site" : " sites") + " in the ring.";
+
+      var cards = [].slice.call(grid.querySelectorAll(".card"));
+      document.getElementById("search").addEventListener("input", function(){
+        var query = this.value.trim().toLowerCase();
+        var shown = 0;
+        cards.forEach(function(c){
+          var hit = !query || c.getAttribute("data-q").indexOf(query) >= 0;
+          c.style.display = hit ? "" : "none";
+          if (hit) shown++;
+        });
+        empty.textContent = shown ? "" : 'No site matches "' + query + '".';
+      });
     } catch (e) {
-      list.innerHTML = "<li>Could not load the member list. (Serve over http, not file://.)</li>";
+      grid.innerHTML = "<p>Could not load the member list. (Serve over http, not file://.)</p>";
     }
   })();
 </script>
