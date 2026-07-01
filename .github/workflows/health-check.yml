@@ -71,6 +71,7 @@ jobs:
         run: |
           test -f status.json || exit 0
           cp status.json /tmp/status.json
+          rm -f status.json
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch origin status 2>/dev/null && git checkout status || git checkout --orphan status
