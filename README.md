@@ -1,4 +1,4 @@
-# loopback webring
+# vibering webring
 
 A dead-simple, **fully static**, **invite-only** [webring](https://en.wikipedia.org/wiki/Webring):
 a loop of personal websites that link to one another. No backend, no database, no build step.
@@ -87,9 +87,9 @@ Everything brandable lives in one place — the `CONFIG` object at the top of **
 
 ```js
 const CONFIG = {
-  name:    "loopback",                       // ring name
+  name:    "vibering",                       // ring name
   tagline: "a hand-made ring of ...",        // subtitle
-  baseUrl: "https://loopback.example.com",   // where this site is deployed (for the snippet)
+  baseUrl: "https://vibering.example.com",   // where this site is deployed (for the snippet)
   dataUrl: "webring.json",
 };
 ```

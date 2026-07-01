@@ -1,6 +1,6 @@
 const CONFIG = {
-  name: "loopback",
-  baseUrl: "https://arshnah.github.io/loopback",
+  name: "vibering",
+  baseUrl: "https://arshnah.github.io/vibering",
   dataUrl: "webring.json",
 };
 

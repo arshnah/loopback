@@ -1,4 +1,4 @@
-# You've been invited to the loopback webring
+# You've been invited to the vibering webring
 
 Someone in the ring vouched for you. That's the only way in. This file walks you
 through adding your site. It takes about ten minutes.
@@ -10,7 +10,7 @@ visitor lands on one site, clicks "next," and ends up on the next member's site,
 then the next, until they loop back to where they started. No feeds, no ranking,
 no tracking. Just people's own corners of the web, connected by hand.
 
-loopback is invite-only. The ring stays small and the sites stay good because
+vibering is invite-only. The ring stays small and the sites stay good because
 every member had to be vouched for by someone already in it.
 
 ## Before you start
@@ -57,11 +57,11 @@ This is the part that makes it a ring. Add these links somewhere on your site
 exact name you used above, and replace the base URL with the ring's real address:
 
 ```html
-<!-- loopback webring -->
+<!-- vibering webring -->
 <nav class="webring">
   <a href="https://RING-URL/go.html?from=your-handle&dir=prev">&laquo; prev</a> |
   <a href="https://RING-URL/random/">random</a> |
-  <a href="https://RING-URL/">loopback</a> |
+  <a href="https://RING-URL/">vibering</a> |
   <a href="https://RING-URL/go.html?from=your-handle&dir=next">next &raquo;</a>
 </nav>
 ```
@@ -86,7 +86,7 @@ how people find their way in. The badge file lives at `badge.svg` in the repo, o
 right-click the one on the homepage and save it.
 
 ```html
-<a href="https://RING-URL/"><img src="badge.svg" width="88" height="31" alt="loopback webring"></a>
+<a href="https://RING-URL/"><img src="badge.svg" width="88" height="31" alt="vibering webring"></a>
 ```
 
 ## Step 4: Open the pull request

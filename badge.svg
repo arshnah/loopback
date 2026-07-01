@@ -1,15 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31" shape-rendering="crispEdges">
-  <rect width="88" height="31" fill="#0d1430"/>
-  <rect x="1" y="1" width="86" height="29" fill="#1b2a5b"/>
-  <rect x="1" y="1" width="86" height="1" fill="#33478a"/>
-  <rect x="1" y="29" width="86" height="1" fill="#0a1024"/>
-  <rect x="1" y="1" width="26" height="29" fill="#0d1430"/>
-  <rect x="27" y="1" width="1" height="29" fill="#33478a"/>
-  <g transform="translate(14,15.5)">
-    <circle r="8" fill="none" stroke="#f6c177" stroke-width="2"/>
-    <circle cx="0" cy="-8" r="2.3" fill="#eb6f92"/>
-    <circle r="2.1" fill="#efe7d0"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="88" height="31" viewBox="0 0 88 31">
+  <defs>
+    <linearGradient id="vg" x1="0" y1="0" x2="88" y2="31" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7c5cff"/>
+      <stop offset="0.5" stop-color="#ff5db1"/>
+      <stop offset="1" stop-color="#ff7a5c"/>
+    </linearGradient>
+  </defs>
+  <rect width="88" height="31" fill="#0c0812"/>
+  <rect x="1" y="1" width="86" height="29" fill="#181026"/>
+  <rect x="1" y="1" width="86" height="1" fill="#3a2c52"/>
+  <rect x="1" y="1" width="27" height="29" fill="#0f0a18"/>
+  <g transform="translate(14.5,15.5)">
+    <circle r="8" fill="none" stroke="url(#vg)" stroke-width="2.5"/>
+    <circle cx="0" cy="-8" r="2.4" fill="#ff5db1"/>
   </g>
-  <text x="31" y="14" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="9" font-weight="bold" fill="#f7f1df">LOOPBACK</text>
-  <text x="31" y="24" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="7" fill="#f6c177">WEB RING</text>
+  <text x="31" y="14" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="9" font-weight="bold" fill="#ffe0ef">VIBERING</text>
+  <text x="31" y="24" textLength="53" lengthAdjust="spacingAndGlyphs" font-family="Verdana,Geneva,sans-serif" font-size="7" fill="#b98ff0">web ring</text>
 </svg>
