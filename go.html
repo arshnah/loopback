@@ -1,45 +1,25 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>routing… · loopback</title>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen&display=swap" rel="stylesheet">
-<style>
-  body { margin:0; min-height:100vh; display:grid; place-items:center;
-    background:#efe7d0; color:#2b2a26; font-family:"VT323","Courier New",monospace; font-size:22px; }
-  .box { text-align:center; padding:24px 28px; background:#f7f1df; border:3px solid #2b2a26; box-shadow:6px 6px 0 rgba(43,42,38,.35); max-width:440px; }
-  h1 { font-family:"Silkscreen",monospace; font-size:16px; color:#1b2a5b; margin:0 0 12px; letter-spacing:1px; }
-  a { color:#0b3ad6; }
-  .blink { animation:blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity:0; } }
-</style>
+<meta charset="utf-8">
+<title>Loopback Webring</title>
 </head>
 <body>
-  <div class="box">
-    <h1>◄ LOOPBACK WEBRING ►</h1>
-    <div id="msg">routing you onward<span class="blink">_</span></div>
-  </div>
+<p id="msg">Routing you onward...</p>
 <script src="webring.js"></script>
 <script>
   (async function () {
-    const msg = document.getElementById("msg");
-    const params = new URLSearchParams(location.search);
+    var msg = document.getElementById("msg");
+    var params = new URLSearchParams(location.search);
     try {
-      const members = await loadMembers();
-      const target = resolveTarget(members, params);
-      if (target && target.url) {
-        msg.innerHTML = 'off to <b>' + target.name + '</b> →';
-        location.replace(target.url);
-        return;
-      }
-      const from = params.get("from") || "(none)";
-      msg.innerHTML =
-        'could not find <b>"' + from.replace(/[<>&]/g, "") + '"</b> in the ring.<br><br>' +
-        '<a href="./">← back to the directory</a> · ' +
-        '<a href="go.html?dir=random">random site →</a>';
-    } catch (err) {
-      msg.innerHTML = 'the ring is unreachable right now.<br><br><a href="./">← back to the directory</a>';
+      var members = await loadMembers();
+      var target = resolveTarget(members, params);
+      if (target && target.url) { location.replace(target.url); return; }
+      var from = (params.get("from") || "(none)").replace(/[<>&]/g, "");
+      msg.innerHTML = 'Could not find "' + from + '" in the ring. ' +
+        '<a href="./">Back to the directory</a> | <a href="random/">Random site</a>';
+    } catch (e) {
+      msg.innerHTML = 'The ring is unreachable. <a href="./">Back to the directory</a>';
     }
   })();
 </script>

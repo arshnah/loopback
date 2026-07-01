@@ -1,42 +1,23 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>random · loopback</title>
-<script>
-  (function () { var t; try { t = localStorage.getItem("loopback-theme"); } catch (e) {} document.documentElement.dataset.theme = t || "light"; })();
-</script>
-<link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen&display=swap" rel="stylesheet">
-<style>
-  :root { --paper:#efe7d0; --panel:#f7f1df; --ink:#2b2a26; --navy:#1b2a5b; --link:#0b3ad6; }
-  :root[data-theme="dark"] { --paper:#0a0f0b; --panel:#0f1710; --ink:#7bef95; --navy:#8ffca6; --link:#5fd3ff; }
-  body { margin:0; min-height:100vh; display:grid; place-items:center;
-    background:var(--paper); color:var(--ink); font-family:"VT323","Courier New",monospace; font-size:22px; }
-  .box { text-align:center; padding:24px 28px; background:var(--panel); border:3px solid var(--ink); box-shadow:6px 6px 0 rgba(0,0,0,.3); max-width:440px; }
-  h1 { font-family:"Silkscreen",monospace; font-size:16px; color:var(--navy); margin:0 0 12px; letter-spacing:1px; }
-  a { color:var(--link); }
-  .blink { animation:blink 1s steps(1) infinite; } @keyframes blink { 50% { opacity:0; } }
-</style>
+<meta charset="utf-8">
+<title>Random site - Loopback Webring</title>
 </head>
 <body>
-  <div class="box">
-    <h1>↯ RANDOM SITE</h1>
-    <div id="msg">spinning the dial<span class="blink">_</span></div>
-  </div>
+<p id="msg">Picking a random site...</p>
 <script src="../webring.js"></script>
 <script>
-  // this page lives one level down, so point the loader at the parent's data
   CONFIG.dataUrl = "../webring.json";
   (async function () {
-    const msg = document.getElementById("msg");
+    var msg = document.getElementById("msg");
     try {
-      const members = await loadMembers();
-      const target = randomMember(members, "");
-      if (target && target.url) { msg.innerHTML = "off to <b>" + target.name + "</b> →"; location.replace(target.url); return; }
-      msg.innerHTML = 'the ring is empty. <a href="../">← back</a>';
+      var members = await loadMembers();
+      var target = randomMember(members, "");
+      if (target && target.url) { location.replace(target.url); return; }
+      msg.innerHTML = 'The ring is empty. <a href="../">Back to the directory</a>';
     } catch (e) {
-      msg.innerHTML = 'the ring is unreachable. <a href="../">← back</a>';
+      msg.innerHTML = 'The ring is unreachable. <a href="../">Back to the directory</a>';
     }
   })();
 </script>

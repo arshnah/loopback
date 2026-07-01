@@ -1,370 +1,108 @@
 <!doctype html>
-<html lang="en">
+<html>
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>loopback webring</title>
-<meta name="description" content="an invite-only ring of personal websites you click through one at a time" />
-<meta property="og:title" content="the loopback webring" />
-<meta property="og:description" content="an invite-only ring of personal websites you click through one at a time" />
-<script>
-  // set theme before first paint (no flash). retro default = lights on (light).
-  (function () {
-    var t; try { t = localStorage.getItem("loopback-theme"); } catch (e) {}
-    document.documentElement.dataset.theme = t || "light";
-  })();
-</script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=VT323&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --paper:#efe7d0;        /* aged parchment */
-    --paper-2:#f7f1df;
-    --ink:#2b2a26;
-    --faded:#6b6552;
-    --navy:#1b2a5b;
-    --link:#0b3ad6;         /* classic hyperlink blue */
-    --visited:#6a1a9a;      /* classic visited purple */
-    --red:#b52626;
-    --teal:#1f7a70;
-    --gold:#c98a1e;
-    --bevel-lt:#fffaf0;
-    --bevel-dk:#b6ac8f;
-    --mono:"VT323", "Courier New", Courier, monospace;
-    --pixel:"Silkscreen", "Courier New", monospace;
-    --bar-bg:#1b2a5b;       /* title bars + avatars */
-    --bar-ink:#efe7d0;
-    --scan:rgba(0,0,0,.018);
-    --glow:transparent;
-  }
-  /* ---- lights out: green-phosphor CRT ---- */
-  :root[data-theme="dark"] {
-    --paper:#0a0f0b;
-    --paper-2:#0f1710;
-    --ink:#7bef95;
-    --faded:#3f7d51;
-    --navy:#8ffca6;         /* headings glow green */
-    --link:#5fd3ff;
-    --visited:#c79bff;
-    --red:#ff7a6b;
-    --teal:#57e0c8;
-    --gold:#ffd25e;
-    --bevel-lt:#1c2c1e;
-    --bevel-dk:#050a06;
-    --bar-bg:#04220f;
-    --bar-ink:#8ffca6;
-    --scan:rgba(0,0,0,.10);
-    --glow:rgba(120,255,150,.05);
-  }
-  * { box-sizing:border-box; }
-  html { -webkit-text-size-adjust:100%; }
-  body {
-    margin:0;
-    background:var(--paper);
-    background-image:
-      repeating-linear-gradient(0deg, var(--scan) 0 2px, transparent 2px 4px),
-      radial-gradient(circle at 50% -5%, var(--glow), transparent 55%);
-    color:var(--ink);
-    transition:background-color .2s ease, color .2s ease;
-    font-family:var(--mono);
-    font-size:20px;
-    line-height:1.35;
-  }
-  a { color:var(--link); }
-  a:visited { color:var(--visited); }
-  a:hover { color:var(--red); }
-  img { image-rendering:pixelated; }
-
-  .wrap { width:min(880px,100%); margin:0 auto; padding:20px 14px 60px; }
-
-  /* framed panels — old table/bevel look */
-  .panel {
-    background:var(--paper-2);
-    border:3px solid var(--ink);
-    box-shadow:6px 6px 0 rgba(43,42,38,.35);
-    margin:0 0 22px;
-  }
-  .panel .bar {
-    background:var(--bar-bg); color:var(--bar-ink);
-    font-family:var(--pixel); font-size:12px; letter-spacing:1px;
-    padding:8px 12px; display:flex; justify-content:space-between; align-items:center; gap:10px;
-  }
-  .panel .body { padding:16px 18px; }
-
-  /* marquee-style top banner (no actual marquee tag needed) */
-  .banner {
-    position:relative;
-    text-align:center; padding:22px 12px 18px;
-    border:3px double var(--ink); background:
-      repeating-linear-gradient(135deg, var(--paper-2) 0 10px, color-mix(in srgb, var(--paper-2) 82%, var(--ink)) 10px 20px);
-    margin-bottom:22px;
-  }
-  .lights {
-    position:absolute; top:8px; right:8px;
-    font-family:var(--mono); font-size:15px; cursor:pointer;
-    color:var(--ink); background:var(--paper);
-    border:2px solid var(--ink); border-top-color:var(--bevel-lt); border-left-color:var(--bevel-lt);
-    border-right-color:var(--bevel-dk); border-bottom-color:var(--bevel-dk);
-    padding:3px 9px; line-height:1.1;
-  }
-  .lights:hover { color:var(--red); }
-  .lights:active { border-top-color:var(--bevel-dk); border-left-color:var(--bevel-dk); border-right-color:var(--bevel-lt); border-bottom-color:var(--bevel-lt); }
-  .banner h1 {
-    font-family:var(--pixel); font-weight:700; margin:0;
-    font-size:clamp(20px,5.2vw,34px); color:var(--navy);
-    text-shadow:2px 2px 0 var(--gold);
-    letter-spacing:1px;
-  }
-  .banner .sub { font-size:20px; color:var(--faded); margin-top:8px; }
-  .banner .stars { color:var(--gold); letter-spacing:2px; }
-  .blink { animation:blink 1.1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity:0; } }
-  @media (prefers-reduced-motion: reduce){ .blink{ animation:none; } }
-
-  /* nav widget */
-  .nav { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-  .btn {
-    font-family:var(--mono); font-size:20px; text-decoration:none;
-    color:var(--ink); background:var(--paper);
-    padding:6px 16px; border:2px solid var(--ink);
-    border-top-color:var(--bevel-lt); border-left-color:var(--bevel-lt);
-    border-right-color:var(--bevel-dk); border-bottom-color:var(--bevel-dk);
-  }
-  .btn:visited { color:var(--ink); }
-  .btn:hover { color:var(--red); background:var(--paper-2); }
-  .btn:active { border-top-color:var(--bevel-dk); border-left-color:var(--bevel-dk); border-right-color:var(--bevel-lt); border-bottom-color:var(--bevel-lt); }
-  .btn.rand { color:var(--teal); font-weight:bold; }
-
-  p { margin:0 0 12px; }
-  .lead { color:var(--navy); font-size:22px; }
-  .quiet { color:var(--faded); }
-
-  /* search */
-  .toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:2px; }
-  #search {
-    flex:1 1 220px; font-family:var(--mono); font-size:20px; color:var(--ink);
-    background:var(--paper); border:2px inset var(--bevel-dk); padding:6px 10px; outline:none;
-  }
-  .counter {
-    font-family:var(--pixel); font-size:11px; background:#111; color:#33ff5a;
-    padding:5px 8px; border:2px solid var(--ink); letter-spacing:2px; white-space:nowrap;
-  }
-
-  /* member grid */
-  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px; margin-top:14px; }
-  .site {
-    position:relative; display:flex; align-items:center; gap:10px;
-    background:var(--paper); border:2px solid var(--ink); padding:9px 10px;
-    box-shadow:3px 3px 0 rgba(43,42,38,.28);
-  }
-  .site:hover { background:var(--paper-2); box-shadow:1px 1px 0 rgba(43,42,38,.28); transform:translate(2px,2px); }
-  .site .go { position:absolute; inset:0; z-index:0; }
-  .site .ava, .site .who { pointer-events:none; }   /* let clicks fall through to the card link */
-  .ava {
-    flex:none; width:40px; height:40px; display:grid; place-items:center;
-    background:var(--bar-bg); color:var(--bar-ink); font-family:var(--pixel); font-size:14px;
-    border:2px solid var(--ink); overflow:hidden; position:relative;
-  }
-  .ava img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
-  .ava img[data-failed] { display:none; }
-  .who { display:flex; flex-direction:column; min-width:0; line-height:1.15; }
-  .who .nm { color:var(--navy); font-size:21px; font-weight:bold; }
-  .who .hs { color:var(--faded); font-size:17px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .site .ext { position:relative; z-index:1; pointer-events:auto; margin-left:auto; color:var(--faded); font-size:14px; text-decoration:none; }
-  .site .ext:hover { color:var(--navy); }
-  .who .via { color:var(--faded); font-size:14px; opacity:.85; }
-  .who .via.founder { color:var(--gold); }
-  .empty { grid-column:1/-1; text-align:center; color:var(--faded); padding:24px 0; }
-
-  /* join */
-  pre {
-    background:#101010; color:#d7d7c0; border:2px solid var(--ink);
-    padding:12px 14px; overflow:auto; font-family:var(--mono); font-size:18px; line-height:1.4; margin:6px 0 14px;
-  }
-  pre .k { color:#6bd3ff; } pre .s { color:#9ee493; }
-  .step b { color:var(--red); }
-  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:8px 0; }
-  #handle { font-family:var(--mono); font-size:19px; background:var(--paper); border:2px inset var(--bevel-dk); padding:5px 9px; width:16ch; outline:none; }
-  .copy { font-family:var(--mono); font-size:18px; cursor:pointer; background:var(--paper); border:2px solid var(--ink); border-top-color:var(--bevel-lt); border-left-color:var(--bevel-lt); border-right-color:var(--bevel-dk); border-bottom-color:var(--bevel-dk); padding:5px 14px; }
-  .copy:hover { color:var(--red); }
-
-  .badge-box { display:flex; gap:14px; align-items:center; flex-wrap:wrap; }
-  .badge { border:1px solid var(--ink); display:block; }
-
-  footer { text-align:center; color:var(--faded); font-size:18px; margin-top:26px; }
-  footer .stars { color:var(--gold); }
-</style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Loopback Webring</title>
 </head>
 <body>
-<div class="wrap">
 
-  <div class="banner">
-    <button class="lights" id="lights" title="toggle lights" aria-label="toggle dark mode">☀ lights on</button>
-    <h1><span class="stars">✦</span> THE LOOPBACK WEBRING <span class="stars">✦</span></h1>
-    <div class="sub">an invite-only ring of personal websites you click through one at a time<span class="blink">_</span></div>
-  </div>
+<center>
+<h1>The Loopback Webring</h1>
+<p>A ring of personal websites, linked together in a loop.<br>
+Invite only.</p>
+<p>[ <a href="random/">Random site</a> ]</p>
+</center>
 
-  <!-- travel widget -->
-  <div class="panel">
-    <div class="bar"><span>◄ TRAVEL THE RING ►</span><span>est. 2026</span></div>
-    <div class="body">
-      <div class="nav">
-        <a class="btn rand" href="random/">↯ RANDOM SITE</a>
-        <a class="btn" href="random/">« surprise me »</a>
-        <a class="btn" href="random/">just start walking »</a>
-      </div>
-    </div>
-  </div>
+<hr>
 
-  <!-- what is this -->
-  <div class="panel">
-    <div class="bar"><span>■ WHAT IS THIS</span><span>readme.txt</span></div>
-    <div class="body">
-      <p class="lead">The web used to be made of people instead of feeds.</p>
-      <p>A webring is a loop of independent sites that link to each other in a circle. You land on one, hit <b>next</b>, and end up in some stranger's corner of the internet, maybe a blog, maybe a portfolio, maybe a pile of half-finished experiments. Hit it again and you're somewhere else, until eventually you loop back to where you started. Nothing here gets ranked or tracked, and no algorithm decides what you get to see.</p>
-      <p class="quiet">Every link goes to a room someone built by hand.</p>
-    </div>
-  </div>
+<h2>Members</h2>
+<ol id="members">
+  <li>Loading member list...</li>
+</ol>
+<p id="count"></p>
 
-  <!-- members -->
-  <div class="panel">
-    <div class="bar"><span>☺ MEMBERS OF THE RING</span><span id="host-name">loopback</span></div>
-    <div class="body">
-      <div class="toolbar">
-        <input id="search" type="search" placeholder="search the directory..." autocomplete="off" spellcheck="false" />
-        <span class="counter" id="counter">VISITORS: 000000</span>
-      </div>
-      <div class="grid" id="grid"><div class="empty">loading directory...</div></div>
-    </div>
-  </div>
+<hr>
 
-  <!-- join -->
-  <div class="panel">
-    <div class="bar"><span>✎ JOIN THE RING</span><span>invite only</span></div>
-    <div class="body">
-      <p>This ring is invite-only. You can't add yourself. Someone already in the ring has to vouch for you, and an admin merges you in. If a member sent you here, you're most of the way there. If nobody did, go build a site worth inviting.</p>
-      <p class="quiet"><b>Starting the ring?</b> The very first member is the founder, so there's no one to ask yet. Add yourself with <b>invitedBy</b> set to <b>"founder"</b> and you're in without an invite. Everyone after you needs a vouch.</p>
-      <p class="step"><b>Step 1.</b> Got an invite? Fork the repo and add your entry to <b>webring.json</b>. Set <b>invitedBy</b> to the handle of the member who vouched for you, and leave your entry at the end of the list:</p>
-      <pre>{
-  <span class="k">"name"</span>:      <span class="s">"your-handle"</span>,
-  <span class="k">"gh"</span>:        <span class="s">"your-github-username"</span>,
-  <span class="k">"url"</span>:       <span class="s">"https://your-site.com"</span>,
-  <span class="k">"invitedBy"</span>: <span class="s">"member-who-invited-you"</span>
-}</pre>
-      <p class="step"><b>Step 2.</b> Put the ring navigation on your own site so visitors can keep moving. Type your handle to build your snippet:</p>
-      <div class="row">
-        <label for="handle">your handle:</label>
-        <input id="handle" value="your-handle" spellcheck="false" autocomplete="off" />
-        <button class="copy" id="copy">📋 copy</button>
-      </div>
-      <pre id="snippet"></pre>
-      <p class="step"><b>Step 3.</b> Grab an <b>88×31 badge</b> and link it back to the ring. It's the oldest habit on the web:</p>
-      <div class="badge-box">
-        <a href="./"><img class="badge" src="badge.svg" width="88" height="31" alt="loopback webring badge" /></a>
-        <span class="quiet">↑ right-click → save, or hotlink it</span>
-      </div>
-      <p class="step quiet" style="margin-top:14px">Open a pull request and ping the member who invited you. An automated check stays red until <b>they approve your PR with their own GitHub account</b>, so nobody can sneak in by typing a name. Once they approve, an admin merges you in. Full instructions live in <b>JOIN.md</b>.</p>
-    </div>
-  </div>
+<h2>What is a webring?</h2>
+<p>
+A webring is a collection of independent websites linked together in a loop.
+You start at one site, click "next", and you are taken to the next member's
+site, then the next, and so on, until you come back around to where you started.
+There is no ranking, no tracking, and no algorithm. Just a list of people's own
+websites, connected by hand.
+</p>
 
-  <footer>
-    <span class="stars">✦ ✦ ✦</span><br>
-    <a href="random/">random</a> ·
-    <a href="https://github.com/arshnah/loopback">source</a> ·
-    made for people who still make websites<br>
-    <span class="quiet">best viewed with your own two eyes</span>
-  </footer>
+<hr>
 
-</div>
+<h2>How to join</h2>
+<p>
+This ring is invite-only. You cannot add yourself. A current member has to vouch
+for you, and an admin has to merge you in. If you are the founder starting the
+ring, use <tt>"invitedBy": "founder"</tt>.
+</p>
+
+<p><b>Step 1.</b> Add your entry to the end of <tt>webring.json</tt>:</p>
+<pre>
+{
+  "name": "your-handle",
+  "gh": "your-github-username",
+  "url": "https://your-site.com",
+  "invitedBy": "member-who-invited-you"
+}
+</pre>
+
+<p><b>Step 2.</b> Put the ring navigation on your own site
+(replace <tt>your-handle</tt> with the name you used above):</p>
+<pre>
+&lt;!-- loopback webring --&gt;
+&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=prev"&gt;prev&lt;/a&gt; |
+&lt;a href="https://arshnah.github.io/loopback/random/"&gt;random&lt;/a&gt; |
+&lt;a href="https://arshnah.github.io/loopback/"&gt;loopback&lt;/a&gt; |
+&lt;a href="https://arshnah.github.io/loopback/go.html?from=your-handle&amp;dir=next"&gt;next&lt;/a&gt;
+</pre>
+
+<p><b>Step 3.</b> Open a pull request and ping the member who invited you. They
+approve it with their own GitHub account, then an admin merges it in.
+Full instructions are in <a href="JOIN.md">JOIN.md</a>.</p>
+
+<hr>
+
+<h2>Badge</h2>
+<p>Link this 88x31 badge back to the ring:</p>
+<p><img src="badge.svg" width="88" height="31" alt="loopback webring"></p>
+
+<hr>
+
+<p><small>
+&copy; 2026 &middot;
+<a href="https://github.com/arshnah/loopback">source on github</a>
+</small></p>
 
 <script src="webring.js"></script>
 <script>
-  /* ---- lights on/off ---- */
-  const lights = document.getElementById("lights");
-  function paintLights() {
-    const dark = document.documentElement.dataset.theme === "dark";
-    lights.textContent = dark ? "☾ lights out" : "☀ lights on";
-  }
-  lights.addEventListener("click", () => {
-    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    try { localStorage.setItem("loopback-theme", next); } catch (e) {}
-    paintLights();
-  });
-  paintLights();
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){
+    return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]; }); }
 
-  const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-
-  function siteHTML(m) {
-    const av = m.gh
-      ? `<img src="https://avatars.githubusercontent.com/${esc(m.gh)}?size=80" alt="" loading="lazy" onerror="this.setAttribute('data-failed','')" />`
-      : "";
-    const gh = m.gh
-      ? `<a class="ext" href="https://github.com/${esc(m.gh)}" target="_blank" rel="noopener" title="${esc(m.name)} on GitHub">[gh]</a>`
-      : "";
-    const invitedBy = (m.invitedBy || "").trim();
-    const via = invitedBy
-      ? (invitedBy.toLowerCase() === "founder"
-          ? `<span class="via founder">★ founder</span>`
-          : `<span class="via">↳ vouched by ${esc(invitedBy)}</span>`)
-      : "";
-    return `<div class="site" data-q="${esc((m.name + " " + hostOf(m.url) + " " + invitedBy).toLowerCase())}">
-      <a class="go" href="${esc(m.url)}" rel="noopener" aria-label="visit ${esc(m.name)}"></a>
-      <span class="ava">${esc(initialOf(m.name))}${av}</span>
-      <span class="who"><span class="nm">${esc(m.name)}</span><span class="hs">${esc(hostOf(m.url))}</span>${via}</span>
-      ${gh}
-    </div>`;
-  }
-
-  /* fake retro hit counter, seeded from member count so it's stable */
-  function paintCounter(n) {
-    const val = String(13370 + n * 7).padStart(6, "0");
-    document.getElementById("counter").textContent = "VISITORS: " + val;
-  }
-
-  /* embed snippet */
-  const handle = document.getElementById("handle");
-  const snippet = document.getElementById("snippet");
-  document.getElementById("host-name").textContent = CONFIG.name;
-  function renderSnippet() {
-    const h = (handle.value || "your-handle").trim() || "your-handle";
-    const base = CONFIG.baseUrl.replace(/\/$/, "");
-    snippet.textContent =
-`<!-- ${CONFIG.name} webring -->
-<nav class="webring">
-  <a href="${base}/go.html?from=${h}&dir=prev">&laquo; prev</a> |
-  <a href="${base}/random/">random</a> |
-  <a href="${base}/">${CONFIG.name}</a> |
-  <a href="${base}/go.html?from=${h}&dir=next">next &raquo;</a>
-</nav>`;
-  }
-  handle.addEventListener("input", renderSnippet);
-  document.getElementById("copy").addEventListener("click", async () => {
-    try { await navigator.clipboard.writeText(snippet.textContent); const b = document.getElementById("copy"); b.textContent = "✓ copied"; setTimeout(() => (b.textContent = "📋 copy"), 1300); } catch (e) {}
-  });
-  renderSnippet();
-
-  /* boot */
-  (async function () {
-    const grid = document.getElementById("grid");
-    const search = document.getElementById("search");
+  (async function(){
+    var list = document.getElementById("members");
     try {
-      const members = await loadMembers();
-      paintCounter(members.length);
-      grid.innerHTML = members.map(siteHTML).join("") || `<div class="empty">no members yet. be the first!</div>`;
-      const sites = [...grid.querySelectorAll(".site")];
-      search.addEventListener("input", () => {
-        const q = search.value.trim().toLowerCase();
-        let shown = 0;
-        sites.forEach((s) => { const hit = !q || s.dataset.q.includes(q); s.style.display = hit ? "" : "none"; if (hit) shown++; });
-        const e = grid.querySelector(".empty"); if (e) e.remove();
-        if (!shown) grid.insertAdjacentHTML("beforeend", `<div class="empty">no site matches "${esc(q)}"</div>`);
-      });
-    } catch (err) {
-      grid.innerHTML = `<div class="empty">could not load the directory: ${esc(err.message)}<br><span class="quiet">(serve over http, not file://)</span></div>`;
+      var members = await loadMembers();
+      if (!members.length) { list.innerHTML = "<li>No members yet.</li>"; return; }
+      list.innerHTML = members.map(function(m){
+        var gh = m.gh ? ' (<a href="https://github.com/' + esc(m.gh) + '">github</a>)' : "";
+        var via = "";
+        if (m.invitedBy) via = (String(m.invitedBy).toLowerCase() === "founder")
+          ? " &mdash; founder" : " &mdash; invited by " + esc(m.invitedBy);
+        return '<li><a href="' + esc(m.url) + '">' + esc(m.name) + "</a>" + gh + via + "</li>";
+      }).join("");
+      document.getElementById("count").textContent =
+        members.length + (members.length === 1 ? " site" : " sites") + " in the ring.";
+    } catch (e) {
+      list.innerHTML = "<li>Could not load the member list. (Serve over http, not file://.)</li>";
     }
   })();
 </script>
+
 </body>
 </html>
