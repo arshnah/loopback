@@ -29,9 +29,9 @@
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:10px; margin-top:14px; }
   .card { display:flex; align-items:center; gap:10px; background:#efe7d0; border:2px solid #2b2a26;
     box-shadow:3px 3px 0 rgba(43,42,38,.28); padding:8px 10px; }
-  .ava { flex:none; width:42px; height:42px; background:#1b2a5b; border:2px solid #2b2a26; overflow:hidden;
+  .ava { position:relative; flex:none; width:42px; height:42px; background:#1b2a5b; border:2px solid #2b2a26; overflow:hidden;
     display:flex; align-items:center; justify-content:center; color:#efe7d0; font-weight:bold; font-size:18px; }
-  .ava img { width:100%; height:100%; object-fit:cover; display:block; }
+  .ava img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; display:block; }
   .meta { min-width:0; }
   .nm { color:#1b2a5b; font-weight:bold; text-decoration:none; font-size:16px; }
   .nm:hover { text-decoration:underline; }
