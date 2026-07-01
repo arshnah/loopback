@@ -13,7 +13,7 @@ const CONFIG = {
   tagline: "a hand-made ring of personal websites — no algorithm, just doors",
   // the absolute URL where THIS site is deployed.
   // used to generate the copy-paste embed snippet. no trailing slash.
-  baseUrl: "https://loopback.example.com",
+  baseUrl: "https://arshnah.github.io/loopback",
   // where the member list lives (relative to this deployment)
   dataUrl: "webring.json",
 };
